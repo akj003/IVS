@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Component Name="IVS">
+
+<Unit Name="System Drive" Description="System Drive" >
+	<WinLogEvent WinlogName="Application" EventSource="AX_IVS_Application" EventIDList="111"/>
+	<StatusMap>
+		<Status State="Operational" LogPattern="System drive is in good state" isDefault="true" />
+	</StatusMap>
+</Unit>
+
+<Unit Name="Image Drive" Description="Image Drive" >
+	<WinLogEvent WinlogName="Application" EventSource="AX_IVS_Application" EventIDList="1;9"/>
+	<StatusMap>
+		<Status State="Faulted" LogPattern="AX_IVS_WARN_MEMORY_FULL --- IVS SET" ErrorDescription="Not Enough space available in IVS" CorrectiveAction="1.Delete patients &#xA;2.Format Image Disk"/>
+		<Status State="Operational" LogPattern="AX_IVS_WARN_MEMORY_FULL --- IVS RESET" isDefault="true" />
+    <Status State="Faulted" LogPattern="AX_IVS_WARNING_MEMORY_NOT_AVAILABLE --- IVS SET" ErrorDescription="A fatal image drive error has occurred" CorrectiveAction=" 1. Check the Event Log for disk errors &#xA;2. Check cabling and voltages to the image drives &#xA;3. Check with the diagnostic Hardware Tests &#xA;4. Hard disk possibly defective, replace"/>
+    <Status State="Operational" LogPattern="AX_IVS_WARNING_MEMORY_NOT_AVAILABLE --- IVS RESET"/>
+	</StatusMap>
+</Unit>
+
+
+<Unit Name="Fans" Description="Fans" >
+	<WinLogEvent WinlogName="Application" EventSource="AX_IVS_Application" EventIDList="24"/>
+	<StatusMap>
+    <Status State="Faulted" LogPattern="AX_IVS_WARNING_IVS_FAN_SPEED_TOO_LOW --- IVS SET" ErrorDescription="PC system fan speed too low" CorrectiveAction="1. Check the HW monitoring function &#xA;2. Check the fans in the system for proper function"/>
+    <Status State="Operational" LogPattern="AX_IVS_WARNING_IVS_FAN_SPEED_TOO_LOW --- IVS RESET" isDefault="true" />
+  </StatusMap>
+</Unit>
+
+<Unit Name="GPU" Description="GPU" >
+	<WinLogEvent WinlogName="Application" EventSource="AX_IVS_Application" EventIDList="222"/>
+	<StatusMap>
+		<Status State="Operational" LogPattern="GPU is in good state" />
+	</StatusMap>
+</Unit>
+
+<Unit Name="HCA Board" Description="HCA Board" >
+	<WinLogEvent WinlogName="System" EventSource="AX_HCA" EventIDList="1;8002;400;404;403;408;525;157"/>
+	<StatusMap>
+    <Status State="Operational" LogPattern="HCA startup diagnostics was successful" />
+    <Status State="Faulted" LogPattern="HCA A PL A: sRIO received link reset" ErrorDescription="HCA board reset, HCA is not started till now" CorrectiveAction="Check connection to HCA"/>
+    <Status State="Faulted" LogPattern="HCA A PL A: sRIO link A lost"  ErrorDescription="SRIO link A disconnected" CorrectiveAction="Check SRIO link A connection"/>
+    <Status State="Operational" LogPattern="HCA A PL A: sRIO link stable"/>
+    <Status State="Faulted" LogPattern="HCA A: No service waiting to pick-up message with service id 0x8, Msg id 0xC5A3FC"  ErrorDescription="HCA message queue is full" CorrectiveAction="check IVS application"/>
+    <Status State="Faulted" LogPattern="HCA A: No service waiting to pick-up message with service id 0x20, Msg id 0xC5A3F8"  ErrorDescription="HCA message queue is full" CorrectiveAction="check IVS application"/>
+	<Status State="Faulted" LogPattern="HCA not detected" isDefault="true" ErrorDescription="No Communication with HCA"  CorrectiveAction="Check connection to HCA" />
+  </StatusMap>
+</Unit>
+
+<Unit Name="Vcap Board" Description="Vcap Board" >
+	<WinLogEvent WinlogName="System" EventSource="AX_VCAP2" EventIDList="8002;138;93;91"/>
+	<StatusMap>
+		<Status State="Operational" LogPattern="VCAP startup diagnostics was successful" />
+		<Status State="Faulted" LogPattern="VCAP board reset" ErrorDescription="VCAP board reset, VCAP board is not started till now" CorrectiveAction="Check connection to VCAP Board" />
+		<Status State="Faulted" LogPattern="VCAP MB Video(4): INACTIVE, H 1920, V 0, Freq -1, RawRate 0x00000030, NO HSYNC 0, NO VSYNC 0, NO SCDT 0" ErrorDescription="Link is inactive" CorrectiveAction="Check link connection"/>
+		<Status State="Faulted" LogPattern="VCAP MB Video(4): INACTIVE, H 1919, V 0, Freq -1, RawRate 0x00000035, NO HSYNC 0, NO VSYNC 0, NO SCDT 0" ErrorDescription="Link is inactive" CorrectiveAction="Check link connection"/>
+		<Status State="Faulted" LogPattern="VCAP MB DVI(4) Link is active but the video timing is NOT VALID" ErrorDescription="video timing is NOT VALID" CorrectiveAction="check video timing"/>
+		<Status State="Faulted" LogPattern="VCAP MB DVI(4) Curr-prev video res., HorizRes 1920-1923, VertRes 0-0, Freq 3968253-9 mHz" ErrorDescription="??" CorrectiveAction="??"/>
+	</StatusMap>
+</Unit>
+
+<Unit Name="Power Supply" Description="Power Supply" >
+	<WinLogEvent WinlogName="Application" EventSource="AX_IVS_Application" EventIDList="21"/>
+	<StatusMap>
+		<Status State="Operational" LogPattern="AX_IVS_WARNING_IVS_BATTERY_VOLTAGE_TOO_LOW --- IVS RESET" isDefault="true" />
+    <Status State="Faulted" LogPattern="AX_IVS_WARNING_IVS_BATTERY_VOLTAGE_TOO_LOW --- IVS SET" ErrorDescription="PC Battery Voltage is too low" CorrectiveAction="1. Check the HW monitoring function &#xA;2. Hardware defective, replace PC motherboard battery"/>
+  </StatusMap>
+</Unit>
+
+<Unit Name="IVS Software" Description="IVS Software" >
+	<WinLogEvent WinlogName="Application" EventSource="AT_SYC_Application" EventIDList="38;2;18;90"/>
+	<StatusMap>
+		<Status State="Operational" LogPattern="SYC_18_WarCompReady --- SYC SET: [00024] IVS ready"/>
+    		<Status State="Faulted" LogPattern="SYC_38_WarInformation --- SYC SET: [00050] 0x40 not Ready" ErrorDescription="IVS software is not ready yet" CorrectiveAction="1. Check the Status of IVS sub components "/> 
+    		<Status State="Faulted" LogPattern="SYC_90_WarCompUp --- SYC SET: [00101] IVS turn on" ErrorDescription="IVS software is not ready yet, turn on recieved" CorrectiveAction="1. Check the Status of IVS sub components "/>    
+    		<Status State="Faulted" LogPattern="SYC_2_WarCompDown --- SYC SET: [00002] IVS turn off" ErrorDescription="IVS software is turned off" CorrectiveAction="1. Check the Status of IVS sub components "/>
+  </StatusMap>
+</Unit>
+		
+</Component>
